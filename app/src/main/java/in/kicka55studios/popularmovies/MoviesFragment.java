@@ -54,7 +54,9 @@ public class MoviesFragment extends Fragment {
 
         ListView listView = (ListView) rootView.findViewById(R.id.movies_list_view);
         listView.setAdapter(mMoviesAdapter);
-        getData();
+
+        String pref_sort = Utility.getPreferredSort(getActivity());
+        new FetchMoviesTask(getActivity()).execute(pref_sort);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -75,11 +77,9 @@ public class MoviesFragment extends Fragment {
 
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        String pref_sort = Utility.getPreferredSort(getActivity());
-        new FetchMoviesTask(getActivity()).execute(pref_sort);
+    public void onResume() {
+        super.onResume();
+        getData();
     }
 
 
@@ -90,11 +90,23 @@ public class MoviesFragment extends Fragment {
         Cursor c = null;
 
         if (sortPref.equals(getString(R.string.pref_sort_popularity))) {
-            c = new MoviesDbHelper(getActivity()).getReadableDatabase().query(MoviesContract.MoviesEntry.TABLE_NAME,
-                    null, null, null, null, null, MoviesContract.MoviesEntry.COLUMN_POPULARITY + " DESC");
+            c = new MoviesDbHelper(getActivity()).getReadableDatabase()
+                    .query(MoviesContract.MoviesEntry.TABLE_NAME,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            MoviesContract.MoviesEntry.COLUMN_POPULARITY + " DESC", "20");
         } else {
-            c = new MoviesDbHelper(getActivity()).getReadableDatabase().query(MoviesContract.MoviesEntry.TABLE_NAME,
-                    null, MoviesContract.MoviesEntry.COLUMN_VOTES + " > ?", new String[]{"1000"}, null, null, MoviesContract.MoviesEntry.COLUMN_RATING + " DESC");
+            c = new MoviesDbHelper(getActivity()).getReadableDatabase()
+                    .query(MoviesContract.MoviesEntry.TABLE_NAME,
+                            null,
+                            MoviesContract.MoviesEntry.COLUMN_VOTES + " > ?",
+                            new String[]{"1000"},
+                            null,
+                            null,
+                            MoviesContract.MoviesEntry.COLUMN_RATING + " DESC", "20");
         }
 
 

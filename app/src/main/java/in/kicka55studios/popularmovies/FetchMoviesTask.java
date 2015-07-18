@@ -183,12 +183,15 @@ public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
     protected void onPostExecute(String[] strings) {
         super.onPostExecute(strings);
 
-        MoviesFragment.mMoviesAdapter.clear();
-        for (String movie : strings) {
-            MoviesFragment.mMoviesAdapter.add(movie);
+        if(strings != null){
+            MoviesFragment.mMoviesAdapter.clear();
+            for (String movie : strings) {
+                MoviesFragment.mMoviesAdapter.add(movie);
+            }
         }
 
-        MoviesFragment.listItems = strings;
+
+        //MoviesFragment.listItems = strings;
 
 
     }
